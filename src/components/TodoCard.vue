@@ -12,17 +12,17 @@
     <div class="row mt-4">
       <div class="col-12 col-sm-6">
         <button
-          @click="isChanging = true"
+          @click="startChangeTodo(todo.id)"
           v-if="!isChanging"
           class="todo-button green"
         >
-          Редактировать
+          Edit
         </button>
-        <button @click="changeTodo" v-else class="todo-button green">Сохранить</button>
+        <button @click="saveChangeTodo" v-else class="todo-button green">Save</button>
       </div>
       <div class="col-12 col-sm-6">
         <button @click="$emit('delete-item')" class="todo-button red">
-          Удалить
+          Delete
         </button>
       </div>
     </div>
@@ -33,8 +33,11 @@
 import { defineProps, ref } from "vue";
 import { ITodo } from "../types/api";
 import { useTodoStore } from "../stores/todos";
-import { randomInteger } from "../utils/utils";
+import { useDate } from "../utils/date";
+
 const todoStore = useTodoStore();
+
+const {formatingDate} = useDate();
 
 interface Props {
   todo: ITodo;
@@ -45,17 +48,18 @@ const isChanging = ref(false);
 const title = ref('');
 const description = ref('');
 
-const date = new Date();
-const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
-const year = date.getFullYear();
 
-const changeTodo = () => {
+const startChangeTodo = (id: number) => {
+  isChanging.value = true
+  todoStore.selectTodo(id)
+}
+
+const saveChangeTodo = () => {
   const newTodo:ITodo = {
-    id: randomInteger(1, 10000),
+    id: todoStore.selectedTodo.id,
     title: title.value,
     description: description.value,
-    date: `${day}.${month}.${year}`
+    date: formatingDate()
   } 
   todoStore.updateTodo(newTodo)
   isChanging.value = false

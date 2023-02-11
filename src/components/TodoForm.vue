@@ -4,7 +4,7 @@
       <div class="col-xl-5 col-lg-4">
         <input
           v-model="todoStore.todoTitle"
-          placeholder="Название"
+          placeholder="Title"
           class="todo-input"
           name="title"
           type="text"
@@ -13,14 +13,14 @@
       <div class="col-xl-5 col-lg-4 mt-3 mt-lg-0">
         <input
           v-model="todoStore.todoDescription"
-          placeholder="Краткое описание"
+          placeholder="Short description"
           class="todo-input"
           name="description"
           type="text"
         />
       </div>
       <div class="col-xl-2 col-lg-4 mt-3 mt-lg-0">
-        <button class="todo-button green">Добавить задачу</button>
+        <button class="todo-button green">Add task</button>
       </div>
     </div>
   </form>
@@ -31,21 +31,25 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useTodoStore } from "../stores/todos";
 import { ITodo } from "../types/api";
 import { randomInteger } from "../utils/utils";
+import { useDate } from "../utils/date";
 
 const todoStore = useTodoStore();
 
-const date = new Date();
-const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
-const year = date.getFullYear();
+const {formatingDate} = useDate();
+
+const resetForm = () => {
+  todoStore.todoTitle = "";
+  todoStore.todoDescription = "";
+};
 
 const addTodo = () => {
-  const data: ITodo = {
+  const newTodo: ITodo = {
     id: randomInteger(1, 10000),
     title: todoStore.todoTitle,
     description: todoStore.todoDescription,
-    date: `${day}.${month}.${year}`,
+    date: formatingDate(),
   };
-  todoStore.addTodo(data);
+  todoStore.addTodo(newTodo);
+  resetForm();
 };
 </script>

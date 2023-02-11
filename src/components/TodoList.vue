@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { useTodoStore } from "../stores/todos";
-import { defineComponent } from "vue";
 import TodoCard from "./TodoCard.vue";
 // import { onMounted } from "vue";
 
